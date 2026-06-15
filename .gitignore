@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Database
+database.db
+database_test.db
+
+# Tests / IDE
+.pytest_cache/
+.agent/
+.gemini/
+*.log

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Zeca - Rastreador de tempo de estudo diário com persistência local e interface premium.">
+    <title>Zeca | Rastreador de Tempo de Estudo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-main-row">
+                <div class="logo-area">
+                    <svg class="logo-icon" viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                        <path d="M12 7v3l2 1"></path>
+                    </svg>
+                    <h1>Foco Diário</h1>
+                </div>
+                <div class="header-badge">
+                    <span class="badge-label">Total Hoje:</span>
+                    <span id="header-total-hours" class="badge-value">0 min</span>
+                </div>
+            </div>
+            <p class="tagline">João Lucas Paes &bull; Gestão de Tempo de Estudo</p>
+        </header>
+
+        <main class="app-grid">
+            <!-- COLUNA 1: REGISTRO DE TEMPO -->
+            <section class="card glass-card tracker-section" aria-labelledby="tracker-title">
+                <h2 id="tracker-title" class="section-title">Registrar Estudo</h2>
+                
+                <form id="study-form" class="form-group" onsubmit="return false;">
+                    <!-- Matéria / Atividade -->
+                    <div class="input-block">
+                        <label for="subject-input" class="field-label">Matéria ou Atividade</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="subject-input" placeholder="Ex: Programação, Matemática..." autocomplete="off" list="subjects-datalist" required>
+                            <datalist id="subjects-datalist">
+                                <option value="Programação"></option>
+                                <option value="Matemática"></option>
+                                <option value="Física"></option>
+                                <option value="Química"></option>
+                                <option value="História"></option>
+                                <option value="Inglês"></option>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <!-- Abas/Toggles de Modo -->
+                    <div class="mode-toggle" role="tablist">
+                        <button type="button" id="tab-manual" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-manual">Manual</button>
+                        <button type="button" id="tab-timer" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-timer">Cronômetro</button>
+                    </div>
+
+                    <!-- PAINEL MANUAL -->
+                    <div id="panel-manual" class="tab-panel" role="tabpanel" aria-labelledby="tab-manual">
+                        <div class="input-block">
+                            <label for="duration-input" class="field-label">Duração (minutos)</label>
+                            <input type="number" id="duration-input" min="1" max="1440" placeholder="Ex: 45">
+                        </div>
+                        <div class="quick-add-group" aria-label="Adicionar minutos rapidamente">
+                            <button type="button" class="quick-btn" data-minutes="15">+15m</button>
+                            <button type="button" class="quick-btn" data-minutes="30">+30m</button>
+                            <button type="button" class="quick-btn" data-minutes="45">+45m</button>
+                            <button type="button" class="quick-btn" data-minutes="60">+60m</button>
+                        </div>
+                        <button type="button" id="btn-save-manual" class="btn btn-primary btn-save">
+                            <span>Registrar Tempo</span>
+                        </button>
+                    </div>
+
+                    <!-- PAINEL CRONÔMETRO -->
+                    <div id="panel-timer" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-timer">
+                        <div class="timer-display" aria-live="polite">
+                            <span id="timer-hours">00</span>:<span id="timer-minutes">00</span>:<span id="timer-seconds">00</span>
+                        </div>
+                        <div class="timer-controls">
+                            <button type="button" id="btn-timer-start" class="btn btn-icon btn-start" aria-label="Iniciar cronômetro">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <polygon points="5,3 19,12 5,21"></polygon>
+                                </svg>
+                                <span>Iniciar</span>
+                            </button>
+                            <button type="button" id="btn-timer-pause" class="btn btn-icon btn-pause hidden" aria-label="Pausar cronômetro">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                                <span>Pausar</span>
+                            </button>
+                            <button type="button" id="btn-timer-reset" class="btn btn-secondary btn-icon" aria-label="Zerar cronômetro">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                                </svg>
+                                <span>Zerar</span>
+                            </button>
+                        </div>
+                        <button type="button" id="btn-save-timer" class="btn btn-primary btn-save" disabled>
+                            <span>Salvar Tempo Decorrido</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- COLUNA 2: PROGRESSE & ANALYTICS -->
+            <div class="results-column">
+                <section class="card glass-card progress-section" aria-labelledby="progress-title">
+                    <h2 id="progress-title" class="section-title">Progresso de Hoje</h2>
+                    
+                    <div class="progress-container">
+                        <!-- Anel circular SVG -->
+                        <div class="svg-ring-container">
+                            <svg class="progress-ring" width="160" height="160">
+                                <circle class="progress-ring__circle-bg" stroke="rgba(255, 255, 255, 0.08)" stroke-width="12" fill="transparent" r="68" cx="80" cy="80"></circle>
+                                <circle class="progress-ring__circle" stroke="url(#progress-gradient)" stroke-width="12" fill="transparent" r="68" cx="80" cy="80"></circle>
+                                <defs>
+                                    <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#8a2be2"></stop>
+                                        <stop offset="100%" stop-color="#00f2fe"></stop>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="ring-label-box">
+                                <span id="today-total-time" class="time-main">0 min</span>
+                                <span class="time-sub">estudados hoje</span>
+                            </div>
+                        </div>
+
+                        <!-- Meta de Horas -->
+                        <div class="goal-setting">
+                            <label for="daily-goal-input" class="goal-label">Meta do Dia: </label>
+                            <div class="goal-input-wrapper">
+                                <input type="number" id="daily-goal-input" min="1" max="24" value="4" class="goal-input">
+                                <span class="goal-unit">horas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barras de Matérias -->
+                    <div class="subject-bars-container">
+                        <h3 class="subsection-title">Tempo por Matéria</h3>
+                        <div id="subject-bars-list" class="subject-bars-list">
+                            <!-- Injetado dinamicamente via JS -->
+                            <p class="empty-state">Nenhum registro hoje. Comece a estudar!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- HISTÓRICO RECENTE DE HOJE -->
+                <section class="card glass-card history-section" aria-labelledby="history-title">
+                    <h2 id="history-title" class="section-title">Sessões de Hoje</h2>
+                    <div id="sessions-log-list" class="sessions-log-list">
+                        <!-- Injetado dinamicamente via JS -->
+                        <p class="empty-state">Sem sessões registradas ainda.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- FOOTER E BACKUPS -->
+        <footer class="app-footer glass-footer">
+            <div class="backup-actions">
+                <button type="button" id="btn-export-backup" class="btn btn-secondary btn-small">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Exportar Backup</span>
+                </button>
+                <button type="button" id="btn-import-trigger" class="btn btn-secondary btn-small">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Importar Backup</span>
+                </button>
+                <input type="file" id="backup-file-input" accept=".json" style="display: none;">
+            </div>
+            <div class="footer-info">
+                <span>João Lucas Paes &bull; Tracker &bull; 100% Offline</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- NOTIFICAÇÕES TOAST -->
+    <div id="toast-container" class="toast-container" aria-live="assertive"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

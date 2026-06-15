@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: zeca-study-tracker
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PORT
+        value: 5000
+      # Para utilizar persistência com disco (plano pago no Render), configure a variável abaixo
+      # e descomente a seção 'disk' abaixo:
+      # - key: DB_PATH
+      #   value: /var/data/database.db
+
+    # Seção de disco persistente (opcional - plano pago):
+    # disk:
+    #   name: zeca-db-disk
+    #   mountPath: /var/data
+    #   sizeGB: 1
